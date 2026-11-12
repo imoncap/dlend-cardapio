@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D'Lend Pizzas Artesanais</title>
+<meta name="description" content="Cardápio e pedidos da D'Lend. Pizzas artesanais com entrega em Iriri, Inhaúma e Piúma.">
+<meta name="theme-color" content="#0C0C0B">
+<link rel="icon" href="img/logo.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="wrap">
+    <img class="logo" src="img/logo.png" alt="D'Lend Pizzas Artesanais" width="260" height="260">
+    <p class="preco-topo">Todas as pizzas a <strong id="preco-topo"></strong></p>
+    <div class="status" id="status">Verificando horário…</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="bloco" aria-labelledby="t-sabores">
+    <h2 id="t-sabores">Sabores</h2>
+    <p class="sub">Toque em + para montar o pedido.</p>
+    <div id="sabores"></div>
+  </section>
+
+  <section class="bloco" id="pedido" aria-labelledby="t-pedido">
+    <h2 id="t-pedido">Seu pedido</h2>
+    <p id="vazio" class="suave">Escolha os sabores acima para montar o pedido.</p>
+
+    <div class="painel" id="resumo" hidden>
+      <ul class="itens" id="itens"></ul>
+
+      <label for="nome">Seu nome</label>
+      <input id="nome" type="text" autocomplete="name" placeholder="Como podemos te chamar?">
+
+      <label for="regiao">Onde você está?</label>
+      <select id="regiao"></select>
+
+      <div id="grupo-endereco">
+        <label for="rua">Rua e número</label>
+        <input id="rua" type="text" autocomplete="street-address" placeholder="Ex.: Rua das Palmeiras, 120">
+        <label for="bairro">Bairro</label>
+        <input id="bairro" type="text">
+        <label for="ref">Ponto de referência (opcional)</label>
+        <input id="ref" type="text" placeholder="Ex.: perto da padaria">
+      </div>
+
+      <label for="pagamento">Forma de pagamento</label>
+      <select id="pagamento"></select>
+
+      <div id="grupo-troco" hidden>
+        <label for="troco">Troco para quanto? (opcional)</label>
+        <input id="troco" type="text" inputmode="decimal" placeholder="Ex.: 50">
+      </div>
+
+      <div class="pix" id="caixa-pix" hidden>
+        <p class="pix-titulo">Pague com Pix</p>
+        <p>Valor: <strong id="pix-valor"></strong></p>
+        <div class="pix-chave">
+          <span id="pix-chave-txt"></span>
+          <button type="button" id="copiar-pix">Copiar chave</button>
+        </div>
+        <p class="suave pequeno" id="pix-dados"></p>
+        <p class="pix-aviso">O pedido só entra em preparo depois que você enviar o comprovante do Pix no WhatsApp.</p>
+      </div>
+
+      <label for="obs">Observações (opcional)</label>
+      <textarea id="obs" rows="2" placeholder="Ex.: sem cebola"></textarea>
+
+      <dl class="totais">
+        <div><dt>Pizzas</dt><dd id="v-pizzas"></dd></div>
+        <div><dt>Entrega</dt><dd id="v-entrega"></dd></div>
+        <div class="total"><dt>Total</dt><dd id="v-total"></dd></div>
+      </dl>
+
+      <p class="aviso" id="aviso-fechado" hidden>Estamos fechados agora. Você pode enviar o pedido e a gente responde quando abrir.</p>
+      <p class="erro" id="erro" role="alert" hidden></p>
+
+      <button class="btn-enviar" id="enviar" type="button">Enviar pedido no WhatsApp</button>
+      <p class="suave pequeno">O WhatsApp abre com o pedido pronto. É só enviar.</p>
+    </div>
+  </section>
+
+  <section class="bloco" aria-labelledby="t-info">
+    <h2 id="t-info">Entrega e pagamento</h2>
+    <dl class="infos" id="infos"></dl>
+  </section>
+
+  <footer>
+    Pedidos também pelo WhatsApp <a id="rodape-tel" href="#"></a>
+  </footer>
+</main>
+
+<div class="barra" id="barra" hidden>
+  <div class="wrap">
+    <div class="barra-resumo">
+      <span id="b-qtd"></span>
+      <strong id="b-total"></strong>
+    </div>
+    <a href="#pedido">Revisar pedido</a>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
