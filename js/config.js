@@ -10,6 +10,9 @@ const CONFIG = {
   telefone: "(28) 99930-2517",        // como aparece na página
   preco: 30,                          // preço único das pizzas, em reais
   retirada: true,                     // false remove a opção "Retirar no local"
+  entrega: false,                     // true volta a habilitar a entrega (usa a lista "regioes" abaixo)
+  enderecoRetirada: "Rua José Costa - Iriri, Anchieta - ES, 29230-000",               // ex.: "Rua tal, 123, Bairro" (aparece em "Retirada")
+  mapa: "https://maps.app.goo.gl/detNM4fmNbod6d5B6?g_st=ac",   // link do Google Maps ("" esconde o botão)
 
   regioes: [
     { nome: "Iriri",   taxa: 3 },
@@ -18,9 +21,9 @@ const CONFIG = {
   ],
 
   horario: {
-    texto: "Sexta a domingo, das 19h às 23h",  // texto exibido
-    dias: [5, 6, 0],                           // 0 = domingo, 1 = segunda ... 6 = sábado
-    abre: 19,                                  // hora de abertura
+    texto: "Quarta a domingo, das 18h às 23h",  // texto exibido
+    dias: [3, 4, 5, 6, 0],                           // 0 = domingo, 1 = segunda ... 6 = sábado
+    abre: 18,                                  // hora de abertura
     fecha: 23                                  // hora de fechamento
   },
 
@@ -41,18 +44,22 @@ const CONFIG = {
 
 /* CONFIRMAR as descrições com o dono antes de publicar. */
 const SABORES = [
-  { id: "calabresa",       nome: "Calabresa",           tipo: "salgada", desc: "Calabresa fatiada" },
-  { id: "calabresa-ace",   nome: "Calabresa Acebolada", tipo: "salgada", desc: "Calabresa fatiada e cebola" },
-  { id: "portuguesa",      nome: "Portuguesa",          tipo: "salgada", desc: "Presunto, ovo, cebola e azeitona" },
-  { id: "frango-catupiry", nome: "Frango com catupiry", tipo: "salgada", desc: "Frango desfiado e catupiry" },
-  { id: "baiana",          nome: "Baiana",              tipo: "salgada", desc: "Calabresa moída, pimenta e cebola" },
-  { id: "presunto",        nome: "Presunto",            tipo: "salgada", desc: "Presunto e muçarela" },
-  { id: "frango",          nome: "Frango",              tipo: "salgada", desc: "Frango desfiado" },
-  { id: "margherita",      nome: "Margherita",          tipo: "salgada", desc: "Muçarela, tomate e manjericão" },
-  { id: "alho-oleo",       nome: "Alho & Óleo",         tipo: "salgada", desc: "Alho dourado no azeite" },
-  { id: "mussarela",       nome: "Mussarela",           tipo: "salgada", desc: "Queijo muçarela" },
-  { id: "milho",           nome: "Milho",               tipo: "salgada", desc: "Milho e muçarela" },
-  { id: "milho-catupiry",  nome: "Milho com catupiry",  tipo: "salgada", desc: "Milho e catupiry" },
-  { id: "goiabada",        nome: "Goiabada com canela", tipo: "doce",    desc: "Goiabada e canela" },
-  { id: "banana",          nome: "Banana com canela",   tipo: "doce",    desc: "Banana e canela" }
+  { id: "calabresa",       nome: "Calabresa",           tipo: "salgada", desc: "Molho, mussarela, calabresa e orégano" },
+  { id: "calabresa-ace",   nome: "Calabresa Acebolada", tipo: "salgada", desc: "Molho, mussarela, calabresa, cebola e orégano" },
+  { id: "portuguesa",      nome: "Portuguesa",          tipo: "salgada", desc: "Molho, mussarela, ovo, presunto, tomate, cebola e orégano" },
+  { id: "frango",          nome: "Frango",              tipo: "salgada", desc: "Molho, mussarela, frango desfiado e orégano" },
+  { id: "frango-catupiry", nome: "Frango com catupiry", tipo: "salgada", desc: "Molho, mussarela, frango desfiado, catupiry e orégano" },
+  { id: "baiana",          nome: "Baiana",              tipo: "salgada", desc: "Molho, mussarela, ovo, calabresa, pimenta e orégano" },
+  { id: "presunto",        nome: "Presunto",            tipo: "salgada", desc: "Molho, mussarela, presunto e orégano" },
+  { id: "marguerita",      nome: "Marguerita",          tipo: "salgada", desc: "Molho, mussarela, manjericão, tomate e orégano" },
+  { id: "alho-oleo",       nome: "Alho & Óleo",         tipo: "salgada", desc: "Molho, mussarela, alho, azeite e orégano" },
+  { id: "mussarela",       nome: "Mussarela",           tipo: "salgada", desc: "Molho, mussarela e orégano" },
+  { id: "milho",           nome: "Milho",               tipo: "salgada", desc: "Molho, mussarela, milho e orégano" },
+  { id: "milho-catupiry",  nome: "Milho com catupiry",  tipo: "salgada", desc: "Molho, mussarela, milho, catupiry e orégano" },
+  { id: "goiabada",        nome: "Goiabada com canela", tipo: "doce",    desc: "Mussarela, goiabada e canela" },
+  { id: "banana",          nome: "Banana com canela",   tipo: "doce",    desc: "Mussarela, banana e canela" },
+  { id: "goiaba",          nome: "Suco de goiaba 500ml",   tipo: "suco", preco: 6,    desc: "Suco natural da fruta congelada (não é polpa)" },
+  { id: "manga",          nome: "Suco de manga 500ml",   tipo: "suco", preco: 6,    desc: "Suco natural da fruta congelada (não é polpa)" },
+  { id: "abacaxi",          nome: "Suco de abacaxi 500ml",   tipo: "suco", preco: 6,    desc: "Suco natural da fruta congelada (não é polpa)" },
+
 ];

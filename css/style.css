@@ -177,3 +177,14 @@ footer a{color:var(--verde-esc); font-weight:600; white-space:nowrap}
   background:linear-gradient(180deg, var(--ouro-claro), var(--ouro));
   color:#1A1405; font-weight:600;
 }
+.btn-mapa{
+  display:inline-block; margin-top:4px; padding:11px 18px; border-radius:12px;
+  border:1.5px solid var(--ouro); color:var(--ouro-escuro);
+  font-weight:600; text-decoration:none;
+}
+.btn-mapa:active{transform:translateY(1px)}
+
+.faixa-preco{
+  margin-left:6px; white-space:nowrap;
+  font-family:var(--serif); font-weight:600; color:var(--ouro-escuro);
+}

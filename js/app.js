@@ -15,7 +15,7 @@ const moeda = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL
 function htmlFaixa(s) {
   return `<li class="faixa" id="f-${s.id}">
     <div class="faixa-txt">
-      <span class="faixa-nome">${s.nome}</span>
+      <span class="faixa-nome">${s.nome}${s.preco !== undefined ? ` <span class="faixa-preco">${moeda(s.preco)}</span>` : ""}</span>
       <span class="faixa-desc">${s.desc}</span>
     </div>
     <div class="passo" role="group" aria-label="Quantidade de ${s.nome}">
@@ -27,7 +27,7 @@ function htmlFaixa(s) {
 }
 
 function montarSabores() {
-  const grupos = [["salgada", "Salgadas"], ["doce", "Doces"]];
+  const grupos = [["salgada", "Salgadas"], ["doce", "Doces"], ["suco", "Sucos"]];
   $("sabores").innerHTML = grupos.map(([tipo, titulo]) => {
     const itens = SABORES.filter(s => s.tipo === tipo);
     if (!itens.length) return "";
@@ -37,12 +37,21 @@ function montarSabores() {
 
 /* ---------- Região / entrega ---------- */
 function montarRegioes() {
-  let opcoes = `<option value="">Escolha a região</option>`;
-  CONFIG.regioes.forEach((r, i) => {
-    opcoes += `<option value="r${i}">${r.nome} (entrega ${moeda(r.taxa)})</option>`;
-  });
+  let opcoes = "";
+  if (CONFIG.entrega) {
+    opcoes += `<option value="">Escolha a região</option>`;
+    CONFIG.regioes.forEach((r, i) => {
+      opcoes += `<option value="r${i}">${r.nome} (entrega ${moeda(r.taxa)})</option>`;
+    });
+  }
   if (CONFIG.retirada) opcoes += `<option value="retirada">Retirar no local (sem taxa)</option>`;
   $("regiao").innerHTML = opcoes;
+  if (!CONFIG.entrega) {
+    /* só retirada: esconde o seletor e a linha de entrega nos totais */
+    $("regiao").hidden = true;
+    document.querySelector('label[for="regiao"]').hidden = true;
+    $("v-entrega").parentElement.hidden = true;
+  }
 }
 
 function entregaSelecionada() {
@@ -72,9 +81,14 @@ function totalPizzas() {
   return SABORES.reduce((n, s) => n + qtd[s.id], 0);
 }
 
+const precoDe = s => (s.preco !== undefined ? s.preco : CONFIG.preco);
+function subtotalPedido() {
+  return SABORES.reduce((soma, s) => soma + qtd[s.id] * precoDe(s), 0);
+}
+
 function atualizar() {
   const n = totalPizzas();
-  const subtotal = n * CONFIG.preco;
+  const subtotal = subtotalPedido();
   const entrega = entregaSelecionada();
   const total = subtotal + (entrega ? entrega.taxa : 0);
 
@@ -92,14 +106,14 @@ function atualizar() {
   $("barra").hidden = n === 0;
 
   $("itens").innerHTML = SABORES.filter(s => qtd[s.id] > 0)
-    .map(s => `<li><span>${qtd[s.id]}x ${s.nome}</span><span>${moeda(qtd[s.id] * CONFIG.preco)}</span></li>`)
+    .map(s => `<li><span>${qtd[s.id]}x ${s.nome}</span><span>${moeda(qtd[s.id] * precoDe(s))}</span></li>`)
     .join("");
 
   $("v-pizzas").textContent = moeda(subtotal);
   $("v-entrega").textContent = entrega ? (entrega.taxa ? moeda(entrega.taxa) : "Grátis") : "Escolha a região";
   $("v-total").textContent = moeda(total);
 
-  $("b-qtd").textContent = n === 1 ? "1 pizza" : n + " pizzas";
+  $("b-qtd").textContent = n === 1 ? "1 item" : n + " itens";
   $("b-total").textContent = moeda(total);
 
   const pg = pagamentoSelecionado();
@@ -151,7 +165,7 @@ function lerTroco(total) {
 
 function montarMensagem(entrega, pg, troco) {
   const n = totalPizzas();
-  const subtotal = n * CONFIG.preco;
+  const subtotal = subtotalPedido();
   const linhas = SABORES.filter(s => qtd[s.id] > 0).map(s => `• ${qtd[s.id]}x ${s.nome}`);
   const obs = $("obs").value.trim();
 
@@ -160,7 +174,7 @@ function montarMensagem(entrega, pg, troco) {
     ``,
     ...linhas,
     ``,
-    `Pizzas: ${moeda(subtotal)}`,
+    `Subtotal: ${moeda(subtotal)}`,
     entrega.retirada ? `Retirada no local` : `Entrega (${entrega.rotulo}): ${moeda(entrega.taxa)}`,
     `Total: ${moeda(subtotal + entrega.taxa)}`,
     ``,
@@ -199,7 +213,7 @@ $("enviar").addEventListener("click", () => {
   }
   if (!pg) return mostrarErro("Escolha a forma de pagamento.", "pagamento");
 
-  const total = totalPizzas() * CONFIG.preco + entrega.taxa;
+  const total = subtotalPedido() + entrega.taxa;
   const troco = pg.tipo === "dinheiro" ? lerTroco(total) : { ok: true, valor: null };
   if (!troco.ok) return mostrarErro(troco.msg, "troco");
 
@@ -248,10 +262,15 @@ function atualizarStatus() {
 function montarInfos() {
   const taxas = CONFIG.regioes.map(r => `${r.nome}: ${moeda(r.taxa)}`).join("<br>");
   const areas = CONFIG.regioes.map(r => r.nome).join(", ");
+  const local = CONFIG.enderecoRetirada ? `: ${CONFIG.enderecoRetirada}` : "";
+  const blocoEntrega = CONFIG.entrega
+    ? `<div><dt>Áreas atendidas</dt><dd>${areas}</dd></div>
+    <div><dt>Taxa de entrega</dt><dd>${taxas}</dd></div>`
+    : `<div><dt>Retirada</dt><dd>Retirada no local${local}</dd></div>`;
   $("infos").innerHTML = `
     <div><dt>Horário</dt><dd>${CONFIG.horario.texto}</dd></div>
-    <div><dt>Áreas atendidas</dt><dd>${areas}</dd></div>
-    <div><dt>Taxa de entrega</dt><dd>${taxas}</dd></div>
+    ${blocoEntrega}
+    ${CONFIG.mapa ? `<div><dt>Como chegar</dt><dd><a class="btn-mapa" href="${CONFIG.mapa}" target="_blank" rel="noopener">Ver no mapa</a></dd></div>` : ""}
     <div><dt>Formas de pagamento</dt><dd>${CONFIG.pagamentos.map(p => p.nome).join(", ")}</dd></div>`;
   const tel = $("rodape-tel");
   tel.textContent = CONFIG.telefone;
